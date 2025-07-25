@@ -15,9 +15,14 @@ export function applyLetterScores(
 
       for (const area of getPlayAreas(s)) {
         for (let i = 1; i < area.length; i++) {
-          for (const { scoreByLetter } of s.rules) {
-            if (scoreByLetter) {
-              s = scoreByLetter(s, area.tiles.slice(0, i));
+          for (const { handle } of s.rules) {
+            const newScore = handle?.(
+              "scoreByLetter",
+              s,
+              area.tiles.slice(0, i)
+            );
+            if (newScore) {
+              s = newScore;
             }
           }
         }

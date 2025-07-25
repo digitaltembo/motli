@@ -18,7 +18,7 @@ export function reset(
         return false;
       }
       // Clone the current state of the boxes
-      const boxes = s.boxes.map((b) => b.clone());
+      const tileSets = s.tileSets.map((b) => b.clone());
 
       const resetMap = Object.entries(getResetMap(s)).map(
         ([playAreaId, discardId]) => [
@@ -55,7 +55,7 @@ export function reset(
         lastModifiedTime: Date.now(),
         previous: {
           ...s,
-          boxes,
+          tileSets,
           lastModifiedTime: Date.now(),
         },
       };

@@ -22,7 +22,7 @@ export function getLetterboxById(
   state: State,
   letterboxId: string
 ): TileSet | undefined {
-  return state.boxes.find(({ id }) => letterboxId === id);
+  return state.tileSets.find(({ id }) => letterboxId === id);
 }
 
 export function addValidationErrors(

@@ -1,5 +1,5 @@
-import { BasicTileSet } from "../../TileSet";
-import { Corpus, Tile, TileSet, Score, State } from "../types";
+import { BasicTileSet } from "../BasicTileSet";
+import { Corpus, TileSet, Score, State } from "../types";
 import { noRepeats } from "../rules/validators/noRepeats";
 import { realWord } from "../rules/validators/realWord";
 import { reset } from "../rules/basic/reset";
@@ -10,7 +10,7 @@ export function boggle(corpus: Corpus, tiles: TileSet): State {
   const board = tiles.selectRandom(16);
 
   const initialState: State = {
-    boxes: [board, playArea],
+    tileSets: [board, playArea],
     corpi: [corpus],
     lastModifiedTime: Date.now(),
     invalidities: [],

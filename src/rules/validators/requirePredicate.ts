@@ -1,14 +1,14 @@
 import { Label, Rule, RuleEvent, State, Tile, TileSet } from "../../types";
-import { addUncommittedState } from "../utils";
+import { addUncommittedState, addValidationErrors } from "../utils";
 
 export function requirePredicate<Id extends string>(
   id: Id,
   label: Label,
   getPlayAreas: (state: State) => TileSet[],
   predicate: (tiles: Tile[]) => boolean
-): Rule<`bonus.${Id}`> {
+): Rule<`required.${Id}`> {
   return {
-    id: `bonus.${id}`,
+    id: `required.${id}`,
     label,
 
     handle: (event: RuleEvent, state: State) => {
@@ -16,9 +16,16 @@ export function requirePredicate<Id extends string>(
         return false;
       }
       for (const area of getPlayAreas(state)) {
-        if (predicate(area.tiles)) {
-          state = addUncommittedState(state, {
-            score: state.score.addToBase(amount),
+        if (!predicate(area.tiles)) {
+          return addValidationErrors(state, {
+            label: {
+              key: `invalid.required.${id}`,
+              opts:
+                typeof label === "string"
+                  ? { labelKey: label }
+                  : { ...label.opts, labelKey: label.key },
+            },
+            invalidSectionIds: [area.id],
           });
         }
       }

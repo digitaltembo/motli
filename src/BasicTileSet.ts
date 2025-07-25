@@ -1,10 +1,22 @@
-import { Tile, TileSet } from "./types";
+import { SearchOpts, Tile, TileSet } from "./types";
 import { uuid } from "./uuid";
 
+/** I dunno, prevent infinite loops or something */
+const ITERATION_CAP = 100_000;
+type PartialSolution = [
+  /** Tiles used in suffix of this solution */
+  soFar: Tile[][],
+  /** Unsolved prefix */
+  prefix: string,
+  /** Solved suffix */
+  suffix: string
+];
 /** Collection of tiles */
 export class BasicTileSet implements TileSet {
   id: string;
   tiles: Tile[];
+
+  private solvedSearches: Record<string, Tile[][]> = {};
 
   constructor(tiles: Tile[] = []) {
     this.id = uuid();
@@ -122,12 +134,9 @@ export class BasicTileSet implements TileSet {
     this.tiles.forEach((_, i) => output.add(this.swapIn(Tile.empty(), i)));
   };
 
+  /** Hey does there need to be a canonical letter, instead of joining all letters */
   toString = (): string => {
-    let s = "";
-    for (const l of this.tiles) {
-      s += l.letter;
-    }
-    return s;
+    return this.tiles.flatMap(({ values }) => values).join("");
   };
 
   selectRandom = (size: number, replaceWith?: Tile): TileSet => {
@@ -141,5 +150,114 @@ export class BasicTileSet implements TileSet {
       }
     }
     return new BasicTileSet(newLetters);
+  };
+
+  search = (s: string, opts?: SearchOpts): Tile[][] => {
+    const solutions: Record<string, Tile[][]> = { "": [] };
+
+    let iterations = 0;
+    let sectionsToSearch = [
+      ...new Set([
+        ...this.tiles.flatMap(({ values }) => values),
+        ...Object.keys(this.solvedSearches),
+      ]),
+    ];
+
+    const matchesConstraints = (solution: Tile[]): boolean => {
+      if (opts?.tileLimit != null && solution.length > opts.tileLimit) {
+        return true;
+      }
+      if (opts?.requireUnique) {
+        let idSet = new Set<string>([]);
+        for (const { id } of solution) {
+          if (idSet.has(id)) {
+            return false;
+          }
+          idSet.add(id);
+        }
+      }
+      if (opts?.customConstraint?.(solution) === false) {
+        return false;
+      }
+      return true;
+    };
+
+    while (Object.keys(solutions).length > 0) {
+      if (s in this.solvedSearches) {
+        return this.solvedSearches[s].filter(matchesConstraints);
+      }
+      if (s in solutions && opts?.selectFirst) {
+        const potentialSolutions = solutions[s].filter(matchesConstraints);
+        if (potentialSolutions.length > 0) {
+          return potentialSolutions;
+        }
+      }
+      iterations++;
+      if (iterations > ITERATION_CAP) {
+        // hopefully isn't necessary but like maybe we accidentally do some big searches
+        throw new Error("Search failed, too involved");
+      }
+      // get the shortest prefix
+      const [prefix, soFar] = Object.entries(solutions).reduce<
+        [string, Tile[][]]
+      >(
+        (acc, [currentPrefix, currentSolutions]) =>
+          currentPrefix.length < acc[0].length
+            ? [currentPrefix, currentSolutions]
+            : acc,
+        [{ length: Number.POSITIVE_INFINITY } as string, []]
+      );
+      if (prefix) {
+        this.solvedSearches[prefix] = soFar;
+      }
+      delete solutions[prefix];
+      const suffix = s.substring(prefix.length);
+
+      // add a solution to the next section on top of the solutions to the previous sections
+      const addSolution = (section: string, sectionSolution: Tile[]) => {
+        const newPrefix = prefix + section;
+        const newSolutions =
+          soFar.length === 0
+            ? [sectionSolution]
+            : soFar.map((singleSolution) => [
+                ...singleSolution,
+                ...sectionSolution,
+              ]);
+
+        if (newPrefix in solutions) {
+          solutions[newPrefix].push(...newSolutions);
+        } else {
+          solutions[newPrefix] = newSolutions;
+        }
+      };
+
+      for (const section of sectionsToSearch) {
+        if (suffix.startsWith(section)) {
+          const returnSolutions =
+            opts?.selectFirst && section.length === suffix.length;
+          if (section in this.solvedSearches) {
+            for (const partialSolution of this.solvedSearches[section]) {
+              if (returnSolutions) {
+                const potentialSolution = [...soFar[0], ...partialSolution];
+                if (matchesConstraints(potentialSolution)) {
+                  return [potentialSolution];
+                }
+              }
+              addSolution(section, partialSolution);
+            }
+          } else {
+            for (const tile of this.tiles) {
+              if (tile.values.includes(section)) {
+                if (returnSolutions) {
+                  return [[...soFar[0], tile]];
+                }
+                addSolution(section, [tile]);
+              }
+            }
+          }
+        }
+      }
+    }
+    return this.solvedSearches[s]?.filter(matchesConstraints) ?? [];
   };
 }

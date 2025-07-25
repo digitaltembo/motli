@@ -18,7 +18,7 @@ export function discard(
         return false;
       }
       // Clone the current state of the boxes
-      const boxes = s.boxes.map((b) => b.clone());
+      const tileSets = s.tileSets.map((b) => b.clone());
 
       const discardMap = Object.entries(getDiscardMap(s)).map(
         ([playAreaId, discardId]) => [
@@ -39,7 +39,7 @@ export function discard(
         lastModifiedTime: Date.now(),
         previous: {
           ...s,
-          boxes,
+          tileSets,
           lastModifiedTime: Date.now(),
         },
       };

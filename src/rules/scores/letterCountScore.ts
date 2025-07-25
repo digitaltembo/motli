@@ -6,7 +6,10 @@ export const LETTER_COUNT_SCORE: Rule<"letterCountScore"> = {
   id: "letterCountScore",
   label: "rules.letterCountScore",
 
-  scoreByLetter: (state: State, _) => {
+  handle: (event: RuleEvent, state: State) => {
+    if (event !== "scoreByLetter") {
+      return false;
+    }
     return addUncommittedState(state, {
       score: state.score.addToBase(1),
     });

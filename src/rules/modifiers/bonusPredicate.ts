@@ -1,7 +1,7 @@
 import { Label, Rule, RuleEvent, State, Tile, TileSet } from "../../types";
 import { addUncommittedState } from "../utils";
 
-export function bonus<Id extends string>(
+export function bonusPredicate<Id extends string>(
   id: Id,
   label: Label,
   amount: number,
