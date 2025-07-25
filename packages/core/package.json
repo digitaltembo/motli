@@ -1,11 +1,11 @@
 {
-  "name": "palabra",
+  "name": "core",
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
     "test": "tsc --noEmit && node --import tsx --test **/*.test.ts"
   },
-  "author": "nolanhhawkins@gmail.com",
+  "author": "",
   "license": "MIT",
   "description": "",
   "dependencies": {
@@ -16,8 +16,5 @@
   },
   "devDependencies": {
     "typescript": "^5.8.3"
-  },
-  "workspaces": [
-    "packages/core"
-  ]
+  }
 }

@@ -8,6 +8,8 @@ TODO
 - [ ] register the events a rule listens to
 - [ ] corpus work
   - [ ] english
+  - [ ] tile analysis
+  - [ ] word analysis
 
 SURFACES
 
