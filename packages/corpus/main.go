@@ -38,6 +38,7 @@ import (
 	"fmt"
 
 	"github.com/digitaltembo/motli/packages/corpus/processes"
+	"github.com/digitaltembo/motli/packages/corpus/sources"
 	"github.com/digitaltembo/motli/packages/corpus/utils"
 )
 
@@ -45,7 +46,7 @@ func main() {
 	args := utils.ParseArgs()
 
 	if args.Download != nil {
-		filename, err := processes.DownloadWikiExtract(args.Download.Language)
+		filename, err := sources.DownloadWikiExtract(sources.WikiExtractLanguage(args.Download.Language))
 		if err != nil {
 			fmt.Printf("Failed to download %s: %s\n", args.Download.Language, err.Error())
 		} else {
@@ -56,13 +57,15 @@ func main() {
 
 	if args.Analyze != nil {
 		if args.Analyze.Tiles > 0 {
-			_, err := processes.TileSet(args.Analyze.Language, args.Analyze.Tiles)
+			_, err := processes.TileSet(
+				sources.LanguageSourceId(args.Analyze.Language),
+				args.Analyze.Tiles)
 
 			if err != nil {
 				fmt.Printf("Failed to get tiles %s: %s\n", args.Analyze.Language, err.Error())
 			}
 		} else {
-			_, err := processes.AnalyzeNgrams(args.Analyze.Language, args.Analyze.Ngrams)
+			_, err := processes.AnalyzeNgrams(sources.LanguageSourceId(args.Analyze.Language), args.Analyze.Ngrams)
 
 			if err != nil {
 				fmt.Printf("Failed to analyze %s: %s\n", args.Analyze.Language, err.Error())

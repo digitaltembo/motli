@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 
+	"github.com/digitaltembo/motli/packages/corpus/sources"
 	"github.com/digitaltembo/motli/packages/corpus/utils"
 )
 
@@ -14,16 +15,17 @@ import (
 // distribution of tiles - currently specifically by looking at the number of
 // occurrences of a given character throughout the entire corpus of example sentences
 // in the wiktionary for the provided language
-func TileSet(language string, tileCount int) (map[string]int, error) {
+func TileSet(language sources.LanguageSourceId, tileCount int) (map[string]int, error) {
 	analysis, err := AnalyzeNgrams(language, 1)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("Hey so found %d\n", len(analysis))
 	// search for a bucket size that gives the appropriate number of tiles
 	min := 1000000
 	max := 0
 	for _, a := range analysis {
-		fmt.Fprintf(os.Stderr, "%s - %d\n", a.Word, a.CorpusCounts.Count)
+		fmt.Fprintf(os.Stderr, "%s - %d\n", a.Symbol, a.CorpusCounts.Count)
 		if a.CorpusCounts.Count > max {
 			max = a.CorpusCounts.Count
 		}
@@ -43,15 +45,15 @@ func TileSet(language string, tileCount int) (map[string]int, error) {
 		}
 
 		if max-min < 2 {
-			fmt.Fprintf(os.Stderr, "Could not match file size :(")
+			fmt.Fprintf(os.Stderr, "Could not match file size, found %d with a bucket size of %d", tiles, bucketSize)
 			break
 		}
 	}
-	outputFile, err := utils.TileFile(language, tileCount)
+	outputFile, err := utils.TileFile(string(language), tileCount)
 	if err != nil {
 		return nil, err
 	}
-	asJson, err := json.Marshal(tileMap)
+	asJson, err := json.MarshalIndent(tileMap, "", "  ")
 	if err != nil {
 		return nil, err
 	}
@@ -70,8 +72,8 @@ func tilesGivenBucketSize(analysis []*Analysis, bucketSize int) (map[string]int,
 	tileMap := map[string]int{}
 	count := 0
 	for _, tile := range analysis {
-		tileMap[tile.Word] = int(math.Ceil(float64(tile.CorpusCounts.Count) / float64(bucketSize)))
-		count += tileMap[tile.Word]
+		tileMap[tile.Symbol] = int(math.Ceil(float64(tile.CorpusCounts.Count) / float64(bucketSize)))
+		count += tileMap[tile.Symbol]
 	}
 	return tileMap, count
 }
