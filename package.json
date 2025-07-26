@@ -1,22 +1,12 @@
 {
-  "name": "palabra",
+  "name": "motli",
   "version": "1.0.0",
-  "main": "index.ts",
   "scripts": {
-    "test": "tsc --noEmit && node --import tsx --test **/*.test.ts"
+    "test": "npm run test --workspaces"
   },
   "author": "nolanhhawkins@gmail.com",
   "license": "MIT",
-  "description": "",
-  "dependencies": {
-    "@types/node": "^24.1.0",
-    "blessed": "^0.1.81",
-    "tsx": "^4.20.3",
-    "uuid": "^11.1.0"
-  },
-  "devDependencies": {
-    "typescript": "^5.8.3"
-  },
+  "description": "One word game to rule them all and in the darkness bind them",
   "workspaces": [
     "packages/core"
   ]
