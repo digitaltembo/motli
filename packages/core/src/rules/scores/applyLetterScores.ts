@@ -1,4 +1,5 @@
-import { Rule, State, RuleEvent, TileSet } from "../../types";
+import { TileSet } from "../../TileSet";
+import { Rule, State, RuleEvent } from "../../types";
 
 /** Returns a RULE that submits the play areas, scoring them, and moves them to the provided discard pile */
 export function applyLetterScores(

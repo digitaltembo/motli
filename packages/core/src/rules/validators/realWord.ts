@@ -1,4 +1,5 @@
-import { Invalidity, TileSet, Rule, RuleEvent, State } from "../../types";
+import { TileSet } from "../../TileSet";
+import { Invalidity, Rule, RuleEvent, State } from "../../types";
 import { addValidationErrors } from "../utils";
 
 function validateState(
@@ -7,7 +8,7 @@ function validateState(
 ): Invalidity | undefined {
   const invalidPlayAreas = playAreas.flatMap((playArea) => {
     const word = playArea.toString();
-    const valid = currentState.corpi.some((c) => c.contains(word));
+    const valid = currentState.corpora.some((c) => c.contains(word));
     return valid ? [] : [playArea.id];
   });
   if (invalidPlayAreas.length) {

@@ -1,4 +1,5 @@
-import { Invalidity, TileSet, State } from "../types";
+import { TileSet } from "../TileSet";
+import { Invalidity, State } from "../types";
 
 export function addUncommittedState(
   currentState: State,

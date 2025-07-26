@@ -1,6 +1,5 @@
 import test, { suite, TestContext } from "node:test";
-import { BasicTileSet } from "./BasicTileSet";
-import { SearchOpts, Tile } from "./types";
+import { SearchOpts, Tile, TileSet } from "./TileSet";
 
 function testSearch(
   description: string,
@@ -9,7 +8,7 @@ function testSearch(
   expectedSolutionIdxs: number[][],
   opts?: SearchOpts
 ) {
-  const tileSet = new BasicTileSet(
+  const tileSet = new TileSet(
     tiles.map((t) => (typeof t === "string" ? new Tile(t.split("/")) : t))
   );
   const actual = tileSet.search(word, opts).map((solnTiles) =>

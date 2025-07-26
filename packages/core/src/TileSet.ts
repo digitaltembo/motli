@@ -1,18 +1,49 @@
-import { SearchOpts, Tile, TileSet } from "./types";
 import { uuid } from "./uuid";
 
 /** I dunno, prevent infinite loops or something */
 const ITERATION_CAP = 100_000;
-type PartialSolution = [
-  /** Tiles used in suffix of this solution */
-  soFar: Tile[][],
-  /** Unsolved prefix */
-  prefix: string,
-  /** Solved suffix */
-  suffix: string
-];
+
+/** Options used for searching for a string in a tile set */
+export type SearchOpts = {
+  /** If set, will return as soon as a single match was found */
+  selectFirst?: boolean;
+  /** If set, will not allow tiles to be reused */
+  requireUnique?: boolean;
+  /** Limit the number of tiles that can be used to solve the problem */
+  tileLimit?: number;
+  /** Custom constraint around valid solutions, will be applied alongside requireUnique and tileLimit */
+  customConstraint?: (tiles: Tile[]) => boolean;
+};
+
+export type LetterOpts = {
+  score?: number;
+  specials?: string[];
+  empty?: boolean;
+};
+
+export class Tile {
+  id: string;
+  /** should have at least one value, and linguistically probably most of the time it is a single letter */
+  values: string[];
+  score: number;
+  specials: string[];
+  empty: boolean;
+  constructor(values: string[], opts?: LetterOpts) {
+    this.id = uuid();
+    this.values = values;
+    this.score = opts?.score ?? 0;
+    this.specials = opts?.specials ?? [];
+    this.empty = opts?.empty ?? false;
+  }
+  static empty() {
+    return new Tile([], { empty: true });
+  }
+
+  clone = () => new Tile(this.values, { ...this });
+}
+
 /** Collection of tiles */
-export class BasicTileSet implements TileSet {
+export class TileSet {
   id: string;
   tiles: Tile[];
 
@@ -24,7 +55,7 @@ export class BasicTileSet implements TileSet {
   }
 
   static empty(length: number) {
-    return new BasicTileSet(Array.from({ length }).map(() => Tile.empty()));
+    return new TileSet(Array.from({ length }).map(() => Tile.empty()));
   }
 
   get length() {
@@ -119,11 +150,11 @@ export class BasicTileSet implements TileSet {
     this.tiles = newLetters;
   };
 
-  clone = (): TileSet => new BasicTileSet([...this.tiles]);
+  clone = (): TileSet => new TileSet([...this.tiles]);
 
-  /** Creates a new BasicTileSet of the same size as this one, filled with empty tiles */
+  /** Creates a new TileSet of the same size as this one, filled with empty tiles */
   emptyClone = (): TileSet =>
-    new BasicTileSet(
+    new TileSet(
       Array.from({ length: this.tiles.length }).map(() => Tile.empty())
     );
 
@@ -149,7 +180,7 @@ export class BasicTileSet implements TileSet {
         throw new Error("Could not create board");
       }
     }
-    return new BasicTileSet(newLetters);
+    return new TileSet(newLetters);
   };
 
   search = (s: string, opts?: SearchOpts): Tile[][] => {

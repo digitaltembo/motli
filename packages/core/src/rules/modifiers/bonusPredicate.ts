@@ -1,4 +1,5 @@
-import { Label, Rule, RuleEvent, State, Tile, TileSet } from "../../types";
+import { TileSet, Tile } from "../../TileSet";
+import { Label, Rule, RuleEvent, State } from "../../types";
 import { addUncommittedState } from "../utils";
 
 export function bonusPredicate<Id extends string>(

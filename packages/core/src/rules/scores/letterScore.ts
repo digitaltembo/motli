@@ -1,4 +1,5 @@
-import { Tile, Rule, Score, State, RuleEvent } from "../../types";
+import { Tile } from "../../TileSet";
+import { Rule, State, RuleEvent } from "../../types";
 import { addUncommittedState } from "../utils";
 
 /** Basic rule that adds base points equal to the score of a given letter */

@@ -1,4 +1,5 @@
-import { TileSet, Rule, RuleEvent, State } from "../../types";
+import { TileSet } from "../../TileSet";
+import { Rule, RuleEvent, State } from "../../types";
 import { addValidationErrors } from "../utils";
 
 export function noRepeats(

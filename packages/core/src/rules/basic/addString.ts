@@ -1,4 +1,5 @@
-import { Rule, RuleEvent, SearchOpts, State, Tile, TileSet } from "../../types";
+import { SearchOpts, TileSet, Tile } from "../../TileSet";
+import { Rule, RuleEvent, State } from "../../types";
 import { addUncommittedState } from "../utils";
 
 type Opts = {

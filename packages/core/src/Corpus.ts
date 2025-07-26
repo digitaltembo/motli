@@ -1,11 +1,5 @@
-import {
-  Word,
-  Tile,
-  UsageAnalysis,
-  Corpus,
-  Label,
-  WordCategory,
-} from "./types";
+import { Tile } from "./TileSet";
+import { Word, UsageAnalysis, Corpus, Label, WordCategory } from "./types";
 import { uuid } from "./uuid";
 
 /** Count the number of occurrences of value in the provided word */

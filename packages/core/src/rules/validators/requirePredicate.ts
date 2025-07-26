@@ -1,5 +1,6 @@
-import { Label, Rule, RuleEvent, State, Tile, TileSet } from "../../types";
-import { addUncommittedState, addValidationErrors } from "../utils";
+import { TileSet, Tile } from "../../TileSet";
+import { Label, Rule, RuleEvent, State } from "../../types";
+import { addValidationErrors } from "../utils";
 
 export function requirePredicate<Id extends string>(
   id: Id,
