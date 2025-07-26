@@ -2,7 +2,7 @@
 
 Tools for creating and analyzing word corpora for the purposes of word games.
 
-My goal here is a set of functionality for creating word lists and scoring algorithms for tiles and words that is open-source and easily tunable for different games, play styles, and languages.
+My goal here is a set of functionality for creating word lists and scoring algorithms for tiles and words that is open-source and easily tunable for different games, play styles, and languages. Scrabble of course has its dictionaries, official and unofficial, in many languages, along with a standardized distribution of tiles and tile scores, but a) they are biased around specific Scrabble rules (e.g. favoring a lot of very short words, not having words longer than 8 or 9 letters) and b) they are _probably_ under copyright, although they do seem to be used widely and are constructed at least partially out of the work of uncompensated volunteers passionate about scrabble.
 
 Written in golang with the idea that it might be a bit more efficient than the TS that is otherwise used throughout Motli at dealing with the large amounts of data.
 
@@ -44,3 +44,9 @@ The flags are:
 ```
 
 See [NOTES.md](./NOTES.md) for miscellaneous not-fully-categorized thoughts around what went into this, what should go into this, etc
+
+## Related work
+
+- [Alfred Mosher Butts](https://en.wikipedia.org/wiki/Alfred_Mosher_Butts#Scrabble) is the original creator of Scrabble, deduced the frequency of tiles in the tile set based on the frequency that the letters were showing up in the front page of the New York Times (the tiles were originally used for a game which did not have individual scores for each tile). I have not been able to track down a description of how he came up with the scores themselves, other than the fact that he adjusted it over playtesting, and seems obviously related to the frequency of the letters.
+- [valette](https://github.com/jmlewis/valett/tree/master) is a project by Joshua Lewis to reassess the value of Scrabble tiles, and the only example I have found of code that actually does it
+- [This Deadspin article](https://deadspin.com/h-y-and-z-are-your-money-letters-how-to-beat-scrabbl-5975490/) also reassess the value of Scrabble tiles
