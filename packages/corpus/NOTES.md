@@ -23,7 +23,7 @@ Practically probably end up with rules like scrabble
   - allow for -er, -ing, -ion?
 - Interjections probably not?
 
-### Reference Corpi:
+### Reference Corpora:
 
 - [Wiktionary](https://www.wiktionary.org/) - WikiTionary! All of the words!
   - Need to be careful because this is a lot of words, filter out entries with multiple words, entries of foreign language words, entries of proper nouns etc

@@ -9,6 +9,11 @@ import (
 	"github.com/digitaltembo/motli/packages/corpus/utils"
 )
 
+// Runs an ngram analysis on the language over the corpus created by example
+// in the wiktionary examples in the provided language, and creates a "fairish"
+// distribution of tiles - currently specifically by looking at the number of
+// occurrences of a given character throughout the entire corpus of example sentences
+// in the wiktionary for the provided language
 func TileSet(language string, tileCount int) (map[string]int, error) {
 	analysis, err := AnalyzeNgrams(language, 1)
 	if err != nil {
@@ -59,6 +64,8 @@ func TileSet(language string, tileCount int) (map[string]int, error) {
 	return tileMap, nil
 }
 
+// Count the tiles created by making one tile for every bucketsize appearances of the tile string
+// throughout the entire corpus
 func tilesGivenBucketSize(analysis []*Analysis, bucketSize int) (map[string]int, int) {
 	tileMap := map[string]int{}
 	count := 0
